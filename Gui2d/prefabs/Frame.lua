@@ -1,30 +1,24 @@
 local Frame = require("Gui2d.libraries.Prefab"):extend()
 
 function Frame:new(propertyTable)
-    Frame.super.new(self)
+    Frame.super.new(self,propertyTable)
 
     self.Type = "Frame"
-    self.BackgroundColor = Gui2d.Styling.MainColors.Color1
-    self.StrokeColor = Gui2d.Styling.MainColors.AccentColor
-    self.StrokeWidth = Gui2d.Styling.Strokes.Outline
-
-    propertyTable = propertyTable or {}
-
-    for att,val in pairs(propertyTable) do
-        self[att] = val
-    end
 end
 
 function Frame:Draw()
     love.graphics.setColor(self.BackgroundColor)
 
-    love.graphics.rectangle("fill",self.DrawingParameters.Position.X,self.DrawingParameters.Position.Y,self.DrawingParameters.Size.X,self.DrawingParameters.Size.Y)
+    local RoundX = Common.clamp(self.CornerRounding.Scale.X*self.DrawingParameters.Size.X+self.CornerRounding.Offset.X,0,self.DrawingParameters.Size.X/2)
+    local RoundY = Common.clamp(self.CornerRounding.Scale.Y*self.DrawingParameters.Size.Y+self.CornerRounding.Offset.Y,0,self.DrawingParameters.Size.Y/2)
+
+    love.graphics.rectangle("fill",self.DrawingParameters.Position.X,self.DrawingParameters.Position.Y,self.DrawingParameters.Size.X,self.DrawingParameters.Size.Y,RoundX,RoundY)
 
     if self.StrokeWidth and self.StrokeWidth>0 then
         love.graphics.setColor(self.StrokeColor)
         love.graphics.setLineWidth(self.StrokeWidth)
 
-        love.graphics.rectangle("line",self.DrawingParameters.Position.X,self.DrawingParameters.Position.Y,self.DrawingParameters.Size.X,self.DrawingParameters.Size.Y)
+        love.graphics.rectangle("line",self.DrawingParameters.Position.X,self.DrawingParameters.Position.Y,self.DrawingParameters.Size.X,self.DrawingParameters.Size.Y,RoundX,RoundY)
     end
 end
 

@@ -11,9 +11,6 @@ function Container:__tostring()
 end
 
 function Container:AppendChild(childName,child)
-    print("this is layout order for child")
-    print(child.LayoutOrder)
-
     if not self.LayoutOrder then
         self.LayoutOrder = 0
         child.LayoutOrder = 1

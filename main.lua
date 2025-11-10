@@ -5,7 +5,8 @@ PPrint = require "Gui2d/libraries/PPrint"
 --CONSTANTS
 UI_PREFABS = {
     Button = require "Gui2d/prefabs/Button",
-    Frame = require "Gui2d/prefabs/Frame"
+    Frame = require "Gui2d/prefabs/Frame",
+    TextLabel = require ("Gui2d/prefabs/TextLabel")
 }
 
 FPS_SMOOTHING = 0.99
@@ -60,10 +61,12 @@ function love.draw()
     love.graphics.rectangle("fill",0,0,3000,3000)
 
     local t = (love.timer.getTime() * 0.1) % 1  -- animate over time
-    local r, g, b = rainbowColor(t)
+    --local r, g, b = rainbowColor(t)
 
-    HealthUi.Background.StrokeColor = {r,g,b}
-    HealthUi.Background["2ndBackground"].BackgroundColor = {r,g,b}
+    --HealthUi.Background.StrokeColor = {b,r,g}
+    --HealthUi.Background["2ndBackground"].BackgroundColor = {r,g,b}
+    HealthUi.Background.Bar.Size = UDim2.new(t,0,1,0)
+    HealthUi.Background.HealthAmount.Text = (tostring(math.ceil(t*1000)/10).."%")
     Gui2d:Draw()
 
     love.graphics.setColor(0,0,0)
