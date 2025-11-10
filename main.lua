@@ -12,7 +12,7 @@ UiPrefabs = {
 
 --MAIN
 function love.load()
-
+    Gui2d:AddGui(require("TestingFiles/healthui"))
 end
 
 function love.update(dt)
@@ -20,5 +20,5 @@ function love.update(dt)
 end
 
 function love.draw()
-
+    Gui2d:Draw()
 end
