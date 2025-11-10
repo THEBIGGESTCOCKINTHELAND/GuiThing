@@ -1,21 +1,45 @@
-local Object = require "Gui2d/libraries/Classic"
-local Prefab = Object:extend()
+local Prefab = require("Gui2d.libraries.Container"):extend()
 
-local Prefab = {}
-Prefab.__index = Prefab
+function Prefab:new()
+    Prefab.super.new(self)
 
-function Prefab.new(prefabType)
-    local self = setmetatable({},Prefab)
-
-    self.size = {}
-    self.type = prefabType
-
-    return self
+    self.Size = UDim2.new(0,0,0,0)
+    self.Position = UDim2.new(0,0,0,0)
+    self.Anchor = UDim2.new(0,0,0,0)
 end
 
-function Prefab.draw()
-    warn("Prefab "..self.type.." has no associated draw method!")
+function Prefab:__tostring()
+    return "Prefab"
+end
+
+function Prefab:AddToStack(viewportX,viewportY,viewportWidth,viewportHeight) --viewportX and viewportY are the actual drawing area
+    local DrawPosX = (viewportWidth*self.Position.Scale.X) - (viewportWidth*self.Size.Scale.X*self.Anchor.Scale.X) + self.Position.Offset.X + viewportX
+    local DrawPosY = (viewportHeight*self.Position.Scale.Y) - (viewportHeight*self.Size.Scale.Y*self.Anchor.Scale.Y) + self.Position.Offset.Y + viewportY
+
+    local DrawSizeX = (viewportWidth*self.Size.Scale.X) + self.Size.Offset.X
+    local DrawSizeY = (viewportHeight*self.Size.Scale.Y) + self.Size.Offset.Y
+
+    for _,childName in pairs(self:GetChildren()) do
+        self[childName]:AddToStack(DrawPosX,DrawPosY,DrawSizeX,DrawSizeY)
+    end
+    self["DrawingParameters"] = {
+        Position = {
+            X = DrawPosX,
+            Y = DrawPosY
+        },
+        Size = {
+            X = DrawSizeX,
+            Y = DrawSizeY
+        }
+    }
+
+    Gui2d:AddToDrawStack(self,self.LayoutOrder)
+end
+
+function Prefab:Draw()
+    print("Prefab "..self.Type.." has no associated draw method!")
     return nil
 end
+
 
 return Prefab
