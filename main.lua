@@ -1,7 +1,12 @@
 --LIBRARIES
 local Gui2d = require "Gui2d/Gui2d"
 
+
 --CONSTANTS
+UiPrefabs = {
+    Button = "Gui2d/prefabs/Button",
+    Frame = "Gui2d/prefabs/Frame"
+}
 
 --DYNAMIC
 
@@ -15,5 +20,5 @@ function love.update(dt)
 end
 
 function love.draw()
-    love.graphics.print("HI")
+
 end
