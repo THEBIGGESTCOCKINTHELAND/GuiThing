@@ -41,6 +41,13 @@ local HealthUi
 --MAIN
 function love.load()
 
+
+    HealthUi = Gui2d:AddGui(require("TestingFiles/healthui"))
+
+    --PPrint.pprint(require("TestingFiles/healthui"))
+
+    --PPrint.pprint(Gui2d)
+    
 end
 
 function love.update(dt)
@@ -49,5 +56,16 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.setColor(1,1,1) --make background white for testing
+    love.graphics.rectangle("fill",0,0,3000,3000)
 
+    local t = (love.timer.getTime() * 0.1) % 1  -- animate over time
+    local r, g, b = rainbowColor(t)
+
+    HealthUi.Background.StrokeColor = {r,g,b}
+    HealthUi.Background["2ndBackground"].BackgroundColor = {r,g,b}
+    Gui2d:Draw()
+
+    love.graphics.setColor(0,0,0)
+    love.graphics.print("FPS: "..math.ceil(fpsDisplay))
 end
