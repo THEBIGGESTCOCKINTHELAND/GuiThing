@@ -8,7 +8,6 @@ function TextLabel:new(propertyTable)
     self.TextYAlign = Gui2d.Styling.Text.TextYAlign
     self.TextColor = Gui2d.Styling.Text.TextColor1
 
-
     TextLabel.super.new(self,propertyTable)
 
     self.Type = "TextLabel"

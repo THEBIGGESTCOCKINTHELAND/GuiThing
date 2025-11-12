@@ -1,14 +1,18 @@
+Object = require "Gui2d/libraries/Classic"
 Config = require "Gui2d/libraries/Config"
 UDim2 = require "Gui2d/libraries/UDim2"
 Container = require "Gui2d/libraries/Container"
-Prefab = require("Gui2d/libraries/Prefab")
-Common = require("Gui2d/libraries/Common")
+Prefab = require "Gui2d/libraries/Prefab"
+Common = require "Gui2d/libraries/Common"
+Signal = require "Gui2d/libraries/Signal"
+ActiveBoxes = require "Gui2d/libraries/ActiveBoxes"
 
 local Gui2d = {
     Guis = {},
     Drawstack = {},
     Styling = require("Gui2d/libraries/DefaultStyling"),
-    CachedFonts = {}
+    CachedFonts = {},
+    ActiveBoxes = {}
 }
 
 function Gui2d:ApplyStyling(styleSheet)
@@ -31,7 +35,9 @@ function Gui2d:SetFont(fontName,fontSize)
         if Gui2d.CachedFonts[fontName][fontSize] then
             love.graphics.setFont(Gui2d.CachedFonts[fontName][fontSize])
         else
-            print("Already indexed font. Indexing new font size: "..fontName.."-"..fontSize)
+            if Config.DEBUG.ALLOWED_MESSAGES.FontMessages and Config.DEBUG.DEBUG_MESSAGES then
+                print("Already indexed font. Indexing new font size: "..fontName.."-"..fontSize)
+            end
 
             local newFont = love.graphics.newFont(Config.FONT_FOLDER.."/"..fontName..".ttf",fontSize)
             Gui2d.CachedFonts[fontName][fontSize] = newFont
@@ -39,12 +45,17 @@ function Gui2d:SetFont(fontName,fontSize)
             love.graphics.setFont(newFont)
         end
     else
-        print("Indexing new font: "..fontName)
+        if Config.DEBUG.ALLOWED_MESSAGES.FontMessages and Config.DEBUG.DEBUG_MESSAGES then
+            print("Indexing new font: "..fontName)
+        end
 
         local newFont = love.graphics.newFont(Config.FONT_FOLDER.."/"..fontName..".ttf",fontSize)
         Gui2d.CachedFonts[fontName] = {}
 
-        print("Indexing new font size: "..fontName.."-"..fontSize)
+        if Config.DEBUG.ALLOWED_MESSAGES.FontMessages and Config.DEBUG.DEBUG_MESSAGES then
+            print("Indexing new font size: "..fontName.."-"..fontSize)
+        end
+
         Gui2d.CachedFonts[fontName][fontSize] = newFont
 
         love.graphics.setFont(newFont)
@@ -52,12 +63,19 @@ function Gui2d:SetFont(fontName,fontSize)
 end
 
 function Gui2d:AddToDrawStack(prefab,order)
-    Gui2d.Drawstack[order] = prefab
+    if Gui2d.Drawstack[order] then
+        table.insert(Gui2d.Drawstack[order],prefab)
+    else
+        Gui2d.Drawstack[order] = {}
+        table.insert(Gui2d.Drawstack[order],prefab)
+    end
 end
 
 function Gui2d:DrawDrawstack()
-    for order,prefab in pairs(Gui2d.Drawstack) do
-        prefab:Draw()
+    for order,prefabs in pairs(Gui2d.Drawstack) do
+        for _,prefab in pairs(prefabs) do
+            prefab:Draw()
+        end
     end
 end
 
@@ -75,6 +93,14 @@ function Gui2d:Draw()
     end
 
     Gui2d:DrawDrawstack()
+end
+
+function Gui2d:AddActiveBox(x,y,w,h,order)
+    local newActiveBox = ActiveBoxes(x,y,w,h,order)
+end
+
+function Gui2d:Tick(dt)
+
 end
 
 return Gui2d

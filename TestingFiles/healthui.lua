@@ -5,14 +5,13 @@ local BackgroundFrame = UI_PREFABS.Frame({
     Position = UDim2.new(0.15,0,0.8,0),
     Anchor = UDim2.new(0,0,0,0),
     BackgroundColor = {0.6,0.6,0.6},
-    StrokeColor = {0.3,0.3,0.3},
-    LayoutOrder = 1,
+    StrokeColor = {0.9,0.9,0.9},
+    StrokeWidth = 3,
 })
 
 local Bar = UI_PREFABS.Frame({
     Size = UDim2.new(1,0,1,0),
     BackgroundColor = {0.8,0,0},
-    LayoutOrder = 2,
     StrokeWidth = 0,
 })
 
@@ -20,7 +19,6 @@ local BarHighlight = UI_PREFABS.Frame({
     Size = UDim2.new(1,-2,0,10),
     Position = UDim2.new(0,1,0,1),
     BackgroundColor = {0.9,0,0},
-    LayoutOrder = 3,
     StrokeWidth = 0,
 })
 
@@ -31,27 +29,26 @@ local HealthAmount = UI_PREFABS.TextLabel({
     Size = UDim2.new(1,0,1,0),
     Position = UDim2.new(0,0,0,0),
     Anchor = UDim2.new(0,0,0,0),
-    LayoutOrder = 4,
     TextXAlign = "center",
     TextYAlign = "middle",
     StrokeWidth = 0,
     BackgroundColor = {0,0,0,0},
-    TextColor = {1,1,1,1}
+    TextColor = {1,1,1,1},
+    LayoutOrder = 3,
 })
 
 local HealthTitle = UI_PREFABS.TextLabel({
     Text = "Health",
-    Font = "OpenSans",
-    FontSize = 24,
+    Font = "OpenSansBold",
+    FontSize = 12,
     Size = UDim2.new(0.3,0,0,30),
-    Position = UDim2.new(0.5,0,0,-30),
+    Position = UDim2.new(0.5,0,0,-33),
     Anchor = UDim2.new(0.5,0,0,0),
-    LayoutOrder = 5,
     TextXAlign = "center",
-    TextYAlign = "middle",
-    StrokeWidth = 1,
+    TextYAlign = "bottom",
+    StrokeWidth = 0,
     BackgroundColor = {0,0,0,0},
-    TextColor = {0,0,0}
+    TextColor = {1,1,1}
 })
 
 healthUi:AppendChild("Background",BackgroundFrame)
