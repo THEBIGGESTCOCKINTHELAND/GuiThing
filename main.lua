@@ -9,7 +9,7 @@ UI_PREFABS = {
     TextLabel = require ("Gui2d/prefabs/TextLabel")
 }
 
-FPS_SMOOTHING = 0.99
+FPS_SMOOTHING = 0.999
 
 --FUNCTIONS
 local function hsvToRgb(h, s, v)
@@ -36,31 +36,29 @@ end
 --DYNAMIC
 local fps = 0
 local fpsDisplay = 0
-
-local HealthUi
+local Score = 0
 
 --MAIN
 function love.load()
-    HealthUI = Gui2d:AddGui(require("TestingFiles/healthui"))
-    ConfirmUI = Gui2d:AddGui(require("TestingFiles/confirmui"))
+    --HealthUI = Gui2d:AddGui(require("TestingFiles/healthui"))
+    --ConfirmUI = Gui2d:AddGui(require("TestingFiles/confirmui"))
+    --ModalTestUI = Gui2d:AddGui(require("TestingFiles/modaltestui"))
+    ClickerUI = Gui2d:AddGui(require("TestingFiles/clickerui"))
+    ClickerUI.Button.MouseButton1Clicked:Connect(function()
+        Score = Score + math.ceil(math.random()*100)
+    end)
 end
 
 function love.update(dt)
     fps = 1 / dt                      -- instantaneous fps
     fpsDisplay = fpsDisplay * FPS_SMOOTHING + fps * (1 - FPS_SMOOTHING)
+
+    Gui2d:Tick(dt)
 end
 
 function love.draw()
-    love.graphics.setColor(1,1,1) --make background white for testing
-    --love.graphics.rectangle("fill",0,0,3000,3000)
+    ClickerUI.Score.Text = "Score: "..Score
 
-    local t = math.sin(math.pi*((love.timer.getTime() * 0.1) % 1))  -- animate over time
-    --local r, g, b = rainbowColor(t)
-
-    --HealthUi.Background.StrokeColor = {b,r,g}
-    --HealthUi.Background["2ndBackground"].BackgroundColor = {r,g,b}
-    HealthUI.Background.Bar.Size = UDim2.new(t,0,1,0)
-    HealthUI.Background.HealthAmount.Text = (tostring(math.ceil(t*1000)/10).."%")
     Gui2d:Draw()
 
     love.graphics.setColor(1,1,1)

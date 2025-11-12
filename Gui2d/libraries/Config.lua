@@ -1,11 +1,11 @@
 local config = {
     DEBUG = {
-        DRAW_ACTIVE_LAYERS = false,
+        DRAW_ACTIVE_BOXES = false,
         DRAW_GUI = true,
         DEBUG_MESSAGES = true,
         ALLOWED_MESSAGES = {
             FontMessages = true,
-            SignalMessages = true,
+            SignalMessages = false,
         },
         ACTIVE_BOXES_COLORS = {
             ["Inactive"] = {0,0,1,0.7},
@@ -13,7 +13,7 @@ local config = {
             ["Top"] = {1,0,0,0.7}
         }
     },
-    FONT_FOLDER = "Gui2d/assets/fonts"
+    FONT_FOLDER = "Gui2d/assets/fonts",
 }
 
 return config

@@ -5,15 +5,19 @@ Container = require "Gui2d/libraries/Container"
 Prefab = require "Gui2d/libraries/Prefab"
 Common = require "Gui2d/libraries/Common"
 Signal = require "Gui2d/libraries/Signal"
-ActiveBoxes = require "Gui2d/libraries/ActiveBoxes"
+ActiveBox = require "Gui2d/libraries/ActiveBox"
 
 local Gui2d = {
     Guis = {},
     Drawstack = {},
     Styling = require("Gui2d/libraries/DefaultStyling"),
     CachedFonts = {},
-    ActiveBoxes = {}
+    ActiveBoxes = {},
+    RegenerateActiveBoxesThisCycle = false,
+    TopActiveBoxThisCycle = -999999,
 }
+
+local ScreenX,ScreenY = love.graphics.getDimensions()
 
 function Gui2d:ApplyStyling(styleSheet)
     Gui2d.Styling = styleSheet
@@ -93,14 +97,62 @@ function Gui2d:Draw()
     end
 
     Gui2d:DrawDrawstack()
+
+    if Config.DEBUG.DRAW_ACTIVE_BOXES then
+        for order,boxes in pairs(Gui2d.ActiveBoxes) do
+            for boxName,box in pairs(Gui2d.ActiveBoxes[order]) do
+                box:Draw()
+            end
+        end
+        
+    end
 end
 
-function Gui2d:AddActiveBox(x,y,w,h,order)
-    local newActiveBox = ActiveBoxes(x,y,w,h,order)
+function Gui2d:AddActiveBox(name,x,y,w,h,order,modal)
+    local newActiveBox = ActiveBox(name,x,y,w,h,order,modal)
+    
+    if Gui2d.ActiveBoxes[order] then
+        Gui2d.ActiveBoxes[order][name] = newActiveBox
+    else
+        Gui2d.ActiveBoxes[order] = {}
+        Gui2d.ActiveBoxes[order][name] = newActiveBox
+    end
+    --Gui2d.ActiveBoxes[name] = newActiveBox
+
+    return newActiveBox
 end
 
 function Gui2d:Tick(dt)
+    Gui2d.TopActiveBoxThisCycle = -99999
 
+    local mx,my = love.mouse.getPosition()
+    local m1d = love.mouse.isDown(1)
+
+    local keys = {}
+    for k in pairs(Gui2d.ActiveBoxes) do
+        table.insert(keys,k)
+    end
+
+    table.sort(keys)
+
+    for i=#keys,1,-1 do
+        local key = keys[i]
+        for boxName,box in pairs(Gui2d.ActiveBoxes[key]) do
+            box:Update(dt,mx,my,m1d)
+            --print("UPDATING ACTIVE BOX OR PRIORITY: "..key)
+        end
+    end
+
+    --check to see if the game window was resized and then tell all activeboxes to get resized
+    local newScreenX,newScreenY = love.graphics.getDimensions()
+
+    if ScreenX~=newScreenX or ScreenY~=newScreenY then
+        ScreenX,ScreenY = love.graphics.getDimensions()
+        --print("ok gang lets resize these activeboxes!")
+        Gui2d.RegenerateActiveBoxesThisCycle = true
+    elseif Gui2d.RegenerateActiveBoxesThisCycle then
+        Gui2d.RegenerateActiveBoxesThisCycle = false
+    end
 end
 
 return Gui2d

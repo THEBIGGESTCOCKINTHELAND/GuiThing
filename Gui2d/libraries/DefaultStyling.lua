@@ -15,6 +15,9 @@ local DefaultStyling = {
         ["TextYAlign"] = "center",
         ["Font"] = "OpenSans",
         ["FontSize"] = 12,
+    },
+    ["ButtonBehavior"] = {
+        ["Modal"] = true,
     }
 }
 

@@ -1,15 +1,23 @@
 local Button = require("Gui2d.libraries.Prefab"):extend()
 
 function Button:new(propertyTable)
-    self.MouseButton1Down = Signal()
-    self.MouseButton1Up = Signal()
-    self.MouseEnter = Signal()
-    self.MouseLeave = Signal()
+    self.Modal = Gui2d.Styling.ButtonBehavior.Modal
 
     Button.super.new(self,propertyTable)
 
     self.Type = "Button"
     self.ActiveBox = nil
+    self.Signals = {
+        MouseButton1Down = Signal(),
+        MouseButton1Up = Signal(),
+        MouseEnter = Signal(),
+        MouseLeave = Signal(),
+        MouseButton1Clicked = Signal()
+    }
+    
+    for signalName,signal in pairs(self.Signals) do
+        self[signalName] = signal
+    end
 end
 
 function Button:Draw()
@@ -28,13 +36,13 @@ function Button:Draw()
     end
 
     if not self.ActiveBox then
-        self.ActiveBox = Gui2d:AddActiveBox(self.DrawingParameters.Position.X,self.DrawingParameters.Position.Y,self.DrawingParameters.Size.X,self.DrawingParameters.Size.Y,self.LayoutOrder)
-        self.ActiveBox:ConnectSignals({
-            ["MouseButton1Down"] = self.MouseButton1Down,
-            ["MouseButton1Up"] = self.MouseButton1Up,
-            ["MouseEnter"] = self.MouseEnter,
-            ["MouseLeave"] = self.MouseLeave
-        })
+        self.ActiveBox = Gui2d:AddActiveBox(self.Name,self.DrawingParameters.Position.X,self.DrawingParameters.Position.Y,self.DrawingParameters.Size.X,self.DrawingParameters.Size.Y,self.LayoutOrder,self.Modal)
+        self.ActiveBox:ConnectSignals(self.Signals)
+    elseif Gui2d.RegenerateActiveBoxesThisCycle then
+        self.ActiveBox.X = self.DrawingParameters.Position.X
+        self.ActiveBox.Y = self.DrawingParameters.Position.Y
+        self.ActiveBox.Width = self.DrawingParameters.Size.X
+        self.ActiveBox.Height = self.DrawingParameters.Size.Y
     end
 end
 
