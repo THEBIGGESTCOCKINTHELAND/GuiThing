@@ -15,6 +15,7 @@ local Gui2d = {
     ActiveBoxes = {},
     RegenerateActiveBoxesThisCycle = false,
     TopActiveBoxThisCycle = -999999,
+    CachedImages = {},
 }
 
 local ScreenX,ScreenY = love.graphics.getDimensions()
@@ -104,7 +105,6 @@ function Gui2d:Draw()
                 box:Draw()
             end
         end
-        
     end
 end
 
@@ -152,6 +152,26 @@ function Gui2d:Tick(dt)
         Gui2d.RegenerateActiveBoxesThisCycle = true
     elseif Gui2d.RegenerateActiveBoxesThisCycle then
         Gui2d.RegenerateActiveBoxesThisCycle = false
+    end
+end
+
+function Gui2d:GetImage(imgName,imgSource)
+    if Config.CACHE_IMAGES then
+        if Gui2d.CachedImages[imgName] then
+            return Gui2d.CachedImages[imgName]
+        else
+            if Config.DEBUG.DEBUG_MESSAGES and Config.DEBUG.ALLOWED_MESSAGES.ImageMessages then
+                print("Caching new image")
+            end
+
+            local newImage = love.graphics.newImage(imgSource)
+            Gui2d.CachedImages[imgName] = newImage
+            return newImage
+        end
+    else
+        local newImage = love.graphics.newImage(imgSource)
+
+        return newImage
     end
 end
 

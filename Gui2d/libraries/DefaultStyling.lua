@@ -18,7 +18,15 @@ local DefaultStyling = {
     },
     ["ButtonBehavior"] = {
         ["Modal"] = true,
-    }
+    },
+    ["Image"] = {
+        ["ImageXAlignment"] = "center",
+        ["ImageYAlignment"] = "center",
+        ["Mode"] = "fit",
+        ["FilterMode"] = "nearest",
+        ["KeepAspectRatio"] = true,
+    },
+    ["ClipsDescendants"] = true,
 }
 
 return DefaultStyling

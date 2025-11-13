@@ -47,5 +47,39 @@ function Common.advancedPrintf(text,x,y,w,h,halign,valign,font,opts)
     end
 end
 
+function Common.tableSearch(table,fvalue)
+    for index,value in pairs(table) do
+        if value==fvalue then
+            return index
+        end
+    end
+    return nil
+end
+
+function Common.drawRoundedMask(x,y,w,h,r)
+    love.graphics.rectangle("fill",x,y,w,h,r,r)
+end
+
+function Common.hsvToRgb(h, s, v)
+    local i = math.floor(h * 6)
+    local f = h * 6 - i
+    local p = v * (1 - s)
+    local q = v * (1 - f * s)
+    local t = v * (1 - (1 - f) * s)
+    local mod = i % 6
+    if mod == 0 then return v, t, p
+    elseif mod == 1 then return q, v, p
+    elseif mod == 2 then return p, v, t
+    elseif mod == 3 then return p, q, v
+    elseif mod == 4 then return t, p, v
+    else return v, p, q end
+end
+
+-- 🎨 t ∈ [0, 1] → RGB color through the rainbow
+function Common.rainbowColor(t)
+    local r, g, b = Common.hsvToRgb(t % 1, 1, 1)
+    return r, g, b
+end
+
 
 return Common

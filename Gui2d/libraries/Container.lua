@@ -4,6 +4,9 @@ function Container:new(name)
     self.Enabled = true
     self.Name = name or "Untitled"
     self.Children = {}
+    self.ChildAppended = Signal()
+    self.ChildRemoved = Signal()
+    self.LineageChanged = Signal()
 end
 
 function Container:__tostring()
@@ -21,6 +24,22 @@ function Container:AppendChild(childName,child)
     child.Name = childName
     self[childName] = child
     table.insert(self.Children,childName)
+
+    self.ChildAppended:Fire()
+    self.LineageChanged:Fire()
+end
+
+function Container:RemoveChild(childName)
+    if self[childName] then
+        self[childName] = nil
+        table.remove(self.Children,Common.tableSearch(self.Children,childName))
+        self.ChildRemoved:Fire()
+        self.LineageChanged:Fire()
+    else
+        if Config.DEBUG.DEBUG_MESSAGES and Config.DEBUG.ALLOWED_MESSAGES.ChildMessages then
+            print("There is no child ("..childName..") for parent ("..self.Name..")")
+        end
+    end
 end
 
 function Container:GetChildren()

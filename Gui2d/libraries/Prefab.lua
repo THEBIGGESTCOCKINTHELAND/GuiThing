@@ -3,13 +3,14 @@ local Prefab = require("Gui2d.libraries.Container"):extend()
 function Prefab:new(propertyTable)
     Prefab.super.new(self)
 
-    self.Size = UDim2.new(0,100,0,100)
-    self.Position = UDim2.new(0,0,0,0)
-    self.Anchor = UDim2.new(0,0,0,0)
-    self.BackgroundColor = Gui2d.Styling.MainColors.Color1
-    self.StrokeColor = Gui2d.Styling.MainColors.AccentColor
-    self.StrokeWidth = Gui2d.Styling.Strokes.Outline
-    self.CornerRounding = Gui2d.Styling.Rounding.CornerRounding
+    self.Size = self.Size or UDim2.new(0,100,0,100)
+    self.Position = self.Position or UDim2.new(0,0,0,0)
+    self.Anchor = self.Anchor or UDim2.new(0,0,0,0)
+    self.BackgroundColor = self.BackgroundColor or Gui2d.Styling.MainColors.Color1
+    self.StrokeColor = self.StrokeColor or Gui2d.Styling.MainColors.AccentColor
+    self.StrokeWidth = self.StrokeWidth or Gui2d.Styling.Strokes.Outline
+    self.CornerRounding = self.CornerRounding or Gui2d.Styling.Rounding.CornerRounding
+    self.ClipsDescendants = self.ClipsDescendants or Gui2d.Styling.ClipsDescendants
 
     propertyTable = propertyTable or {}
 
@@ -32,6 +33,7 @@ function Prefab:AddToStack(viewportX,viewportY,viewportWidth,viewportHeight) --v
     for _,childName in pairs(self:GetChildren()) do
         self[childName]:AddToStack(DrawPosX,DrawPosY,DrawSizeX,DrawSizeY)
     end
+    
     self["DrawingParameters"] = {
         Position = {
             X = DrawPosX,
@@ -47,7 +49,7 @@ function Prefab:AddToStack(viewportX,viewportY,viewportWidth,viewportHeight) --v
 end
 
 function Prefab:Draw()
-    print("Prefab "..self.Type.." has no associated draw method!")
+    print("Prefab ("..self.Type..") has no associated draw method!")
     return nil
 end
 
